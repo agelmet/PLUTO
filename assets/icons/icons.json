@@ -1,0 +1,16 @@
+{
+ "source": {
+  "kind": "file",
+  "ref": "assets/img/pluto-smasherie-logo.svg"
+ },
+ "source_md5": "73b644ab56804eb9132cfc7049ae0998",
+ "version": "c93f7c94",
+ "tile": "#013241",
+ "crop": null,
+ "header": [
+  "inline",
+  "index.html",
+  "300a9b7c868d740c093d1ef301cdefa9"
+ ],
+ "made": "2026-10-20"
+}
