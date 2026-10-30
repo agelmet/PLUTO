@@ -7,7 +7,9 @@ SKELETON (Advon roll, 20 Oct 2026): opening MELT (cheese pours from the top and 
 · story «Ο θεός με την κορώνα» wrapper photo + spinning badge · roadmap «Η αντίστροφη μέτρηση» drawn by scroll with Pluto
   walking it · FAQ split · visit + map behind cookie box · footer · mobile bar Κλήση · Οδηγίες · Instagram
 Every section melts into the next one (drip edges that stretch with the scroll)."""
-import html, json, pathlib, re
+import html, json, pathlib, re, sys
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import menu as MENU
 S = pathlib.Path(__file__).resolve().parent
 OUT = pathlib.Path('/home/claude/pluto/site')
 e = lambda s: html.escape(s, quote=True)
@@ -48,8 +50,11 @@ FAQ = [
   'Είναι burger όπου η μπάλα του κιμά πατιέται με δύναμη πάνω σε πολύ καυτή λάμα. Έτσι το μπιφτέκι γίνεται λεπτό, με τραγανή, καραμελωμένη κρούστα στις άκρες, και μένει ζουμερό μέσα.',
   'It is a burger where a ball of minced beef is pressed hard onto a very hot griddle. The patty turns thin, with a crispy, caramelised crust at the edges, and stays juicy inside.'),
  ('Τι άλλο σερβίρετε εκτός από burger;', 'What else do you serve besides burgers?',
-  'Fried chicken, loaded fries και μερικές ακόμα γεύσεις. Ολόκληρο το μενού και τις τιμές θα τα βρείτε στο κατάστημα.',
-  'Fried chicken, loaded fries and a few more flavours. You will find the full menu and prices in store.'),
+  'Chicken burgers (Crispy Chicken και Korean Spicy Chicken), chicken tenders, πατάτες (κλασικές, γλυκοπατάτες, Truffle Parm και Lock & Load), coleslaw, σάλτσες, μπύρες, κρασιά και αναψυκτικά. Όλο το μενού με τις τιμές θα το βρείτε εδώ, στην ενότητα «Μενού».',
+  'Chicken burgers (Crispy Chicken and Korean Spicy Chicken), chicken tenders, fries (classic, sweet potato, Truffle Parm and Lock & Load), coleslaw, sauces, beers, wines and soft drinks. You will find the full menu with prices right here, in the «Menu» section.'),
+ ('Πόσο κοστίζει ένα smash burger;', 'How much is a smash burger?',
+  'Τα smash burgers μας ξεκινούν από 9,90 € (OG Double Cheeseburger). Κάθε burger υπάρχει και ως God’s Meal, σε μενού, από 14,40 €.',
+  'Our smash burgers start at €9.90 (OG Double Cheeseburger). Every burger also comes as a God’s Meal, from €14.40.'),
  ('Από πότε είστε ανοιχτά;', 'Since when are you open?',
   'Ανοίξαμε τη Δευτέρα 19 Οκτωβρίου 2026. Για το ωράριο, πάρτε μας τηλέφωνο στο 210 800 4455 ή δείτε το Instagram μας.',
   'We opened on Monday 19 October 2026. For our opening hours, call us on 210 800 4455 or check our Instagram.'),
@@ -65,7 +70,7 @@ faq_html = '\n'.join(
  for q, qe, a, ae in FAQ)
 
 body = (S / 'body.html').read_text()
-body = body.replace('{{FAQ}}', faq_html).replace('{{WM_VB}}', art['wm_vb']).replace('{{FLAG_GR}}', FLAG_GR).replace('{{FLAG_UK}}', FLAG_UK)
+body = body.replace('{{MENU}}', MENU.render('el')).replace('{{FAQ}}', faq_html).replace('{{WM_VB}}', art['wm_vb']).replace('{{FLAG_GR}}', FLAG_GR).replace('{{FLAG_UK}}', FLAG_UK)
 body = body.replace('<i>{{BOLT}}</i>', '<i></i>')
 for k, v in I.items():
     body = body.replace('{{' + k + '}}', v)
@@ -90,7 +95,7 @@ ld = {'@context': 'https://schema.org', '@graph': [
               'postalCode': '145 75', 'addressRegion': 'Αττική', 'addressCountry': 'GR'},
   'geo': {'@type': 'GeoCoordinates', 'latitude': 38.1209119, 'longitude': 23.8590225},
   'hasMap': GBP, 'areaServed': ['Δροσιά', 'Σταμάτα', 'Διόνυσος', 'Εκάλη', 'Ροδόπολη'],
-  'acceptsReservations': False, 'knowsAbout': ['Smash burgers', 'Fried chicken', 'Loaded fries', 'Burgers στη Δροσιά'],
+  'acceptsReservations': False, 'hasMenu': MENU.schema(), 'priceRange': '€', 'knowsAbout': ['Smash burgers', 'Fried chicken', 'Loaded fries', 'Burgers στη Δροσιά'],
   'sameAs': ['https://www.instagram.com/pluto_smasherie/', 'https://www.facebook.com/p/Pluto-Smasherie-61594371047403/', GBP]},
  {'@type': 'WebSite', 'name': 'Pluto Smasherie', 'alternateName': ['Pluto Smasherie Δροσιά', 'Pluto smash burgers'], 'inLanguage': ['el', 'en']},
  {'@type': 'FAQPage', 'mainEntity': [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, qe, a, ae in FAQ]},
