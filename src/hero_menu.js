@@ -9,16 +9,19 @@
   C.forEach(function(c,ci){tb+='<button type="button" data-t="'+c.id+'"'+(ci?'':' aria-current="true"')+'>'+esc(L(c))+'</button>';
    var cnt=c.items?c.items.length:c.groups.reduce(function(a,g){return a+g.items.length},0);
    h+='<section class="ms-sec" id="ms-'+c.id+'"><h3>'+esc(L(c))+'<small>'+cnt+' '+(lang==='en'?'items':'επιλογές')+'</small></h3>';
-   if(c.id==='beef')h+='<p class="ms-note">'+(lang==='en'?'Every burger also comes as a God’s Meal — the price is on each card.':'Κάθε burger υπάρχει και ως God’s Meal (σε μενού) — η τιμή είναι σε κάθε κάρτα.')+'</p>';
+   if(c.id==='beef')h+='<div class="ms-promo"><div class="msp-t"><p class="msp-k">God’s Meal</p><p class="msp-h">'+(lang==='en'?'Burger + fries + soft drink':'Burger + πατάτες + αναψυκτικό')+'</p><p class="msp-s">'+(lang==='en'?'Just <b>+€4.50</b> on any burger — instead of €6.00 separately.':'Μόνο <b>+4,50 €</b> σε κάθε burger — αντί για 6,00 € χωριστά.')+'</p></div><img src="assets/img/pluto-smasherie-god-meal-burger-640.webp" width="640" height="378" alt="" loading="lazy" decoding="async"><span class="msp-badge" aria-hidden="true">+4,50 €</span></div>';
    if(c.kind==='tubs'){h+='<div class="ms-tubs">'+c.items.map(function(it,i){return '<div class="ms-tub" style="--i:'+i+';--sc:'+it.c+'"><i aria-hidden="true"></i><span>'+esc(it.n)+'</span><b>'+fmt(it.p)+'</b></div>'}).join('')+'</div>'}
    else if(c.kind==='drinks'){c.groups.forEach(function(g){h+='<h4 class="ms-dg">'+esc(L(g))+'</h4><ul class="ms-dl">'+g.items.map(function(it,i){var nm=lang==='en'?it.ne:it.n,s=lang==='en'?it.se:it.s;return '<li class="ms-di" style="--i:'+i+'"><span>'+esc(nm)+(s?' <small>'+esc(s)+'</small>':'')+'</span><b>'+fmt(it.p)+'</b></li>'}).join('')+'</ul>'})}
    else c.items.forEach(function(it,i){
-    h+='<article class="mc" style="--i:'+i+'"><div class="mc-h"><h4>'+esc(it.n)+'</h4><span class="mc-p">'+fmt(it.p)+'</span></div>';
+    h+='<article class="mc" style="--i:'+i+'"><div class="mc-h"><h4>'+esc(it.n)+(it.b?'<span class="mc-b">'+esc(lang==='en'?it.b[1]:it.b[0])+'</span>':'')+'</h4><span class="mc-p">'+fmt(it.p)+'</span></div>';
+    if(it.t)h+='<p class="mc-t">'+esc(lang==='en'?it.t[1]:it.t[0])+'</p>';
     if(it.ig&&it.ig.length)h+='<p class="mc-l">'+(lang==='en'?'What’s inside':'Τι έχει μέσα')+'</p><ul class="igs">'+it.ig.map(function(g,j){return '<li class="ig ig-'+g[2]+'" style="--j:'+j+'">'+esc(lang==='en'?g[1]:g[0])+'</li>'}).join('')+'</ul>';
-    if(it.m)h+='<div class="mc-meal"><span>God’s Meal<small>'+(lang==='en'?'this burger as a meal':'το burger σε μενού')+'</small></span><b>'+fmt(it.m)+'</b></div>';
+    if(it.m)h+='<div class="mc-meal"><span>God’s Meal<small>'+(lang==='en'?'+ fries + soft drink':'+ πατάτες + αναψυκτικό')+'</small></span><b>'+fmt(it.m)+'</b></div>';
+    if(it.pr)h+='<p class="mc-pair"><span>'+(lang==='en'?'Try it with':'Δοκιμάστε το με')+'</span> <b>'+esc(it.pr[0])+'</b> <em>+'+fmt(it.pr[1])+'</em></p>';
     h+='</article>'});
    h+='</section>'});
   h+='<p class="ms-foot">'+(lang==='en'?'Prices in euro, VAT included. Allergies or questions? Call us on ':'Τιμές σε ευρώ, με ΦΠΑ. Για αλλεργίες ή ερωτήσεις, καλέστε μας στο ')+'<a href="tel:+302108004455">210 800 4455</a>.</p>';
+  h+='<div class="ms-cta"><p>'+(lang==='en'?'Hungry yet?':'Πεινάσατε ήδη;')+'</p><a class="ms-call" href="tel:+302108004455">'+(lang==='en'?'Call':'Κλήση')+' 210 800 4455</a><a class="ms-dir" href="https://maps.google.com/?cid=13492553042540232839" target="_blank" rel="noopener">'+(lang==='en'?'Directions':'Οδηγίες')+'</a></div>';
   tabs.innerHTML=tb;body.innerHTML=h;
   $$('button',tabs).forEach(function(b){b.addEventListener('click',function(){go(b.dataset.t,true)})})}
  function cur(id){$$('button',tabs).forEach(function(b){var on=b.dataset.t===id;if(on)b.setAttribute('aria-current','true');else b.removeAttribute('aria-current');if(on&&tabs.scrollWidth>tabs.clientWidth)tabs.scrollTo({left:b.offsetLeft-(tabs.clientWidth-b.offsetWidth)/2,behavior:RM?'auto':'smooth'})})}

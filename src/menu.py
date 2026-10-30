@@ -17,12 +17,39 @@ IL = {'bun': ('Martin’s Potato Bun', 'Martin’s Potato Bun', 'bun'),
       'fries': ('τηγανητές πατάτες', 'fries', 'fry'), 'sweet': ('τηγανητές γλυκοπατάτες', 'fried sweet potatoes', 'fry'),
       'tmayo': ('truffle mayo', 'truffle mayo', 'sauce'), 'parm': ('παρμεζάνα', 'parmesan', 'cheese'),
       'beef': ('smash μπιφτέκι', 'smash patty', 'beef'), 'onion': ('onion strings', 'onion strings', 'veg'),
-      'pickle': ('χειροποίητη πίκλα', 'homemade pickles', 'veg')}
+      'pickle': ('χειροποίητη πίκλα', 'homemade pickles', 'veg'),
+      'pick': ('πίκλα', 'pickles', 'veg'), 'ketchup': ('κέτσαπ', 'ketchup', 'red'), 'mustard': ('μουστάρδα', 'mustard', 'mustard'),
+      'mayo': ('μαγιονέζα', 'mayonnaise', 'sauce'), 'donion': ('αφυδατωμένο κρεμμύδι', 'dried onion', 'veg'),
+      'onion2': ('κρεμμύδι', 'onion', 'veg')}
 # what each product contains — ONLY what the restaurant's own menu shows. To add a missing ingredient: add it to IL, then here.
-INGR = {'OG Double Cheeseburger': ['bun', 'beef2', 'ch2'], 'Double Truffle': ['bun', 'beef2', 'ch2'], 'Pluto’s Burger': ['bun', 'beef2', 'ch2'],
+INGR = {'OG Double Cheeseburger': ['bun', 'beef2', 'ch2', 'pick', 'ketchup', 'mustard', 'mayo', 'donion'],
+        'Double Truffle': ['bun', 'beef2', 'ch2', 'onion2', 'tmayo'], 'Pluto’s Burger': ['bun', 'beef2', 'ch2'],
         'Crispy Chicken': ['bun', 'bmc', 'ch', 'slaw'], 'Korean Spicy Chicken': ['bun', 'bmc', 'ch', 'kslaw'], 'Chicken Tenders': ['tend'],
         'Classic Fries': ['fries'], 'Sweet Potato Fries': ['sweet'], 'Truffle Parm Fries': ['fries', 'tmayo', 'parm'],
         'Lock & Load Fries': ['fries', 'beef', 'parm', 'onion', 'pickle'], 'Coleslaw': []}
+
+# appetite copy per product (only what the product really is), badge, and a sauce that goes with it
+TAG = {'OG Double Cheeseburger': ('Το κλασικό, όπως πρέπει να είναι: τραγανές άκρες, λιωμένο τυρί και οι τρεις κλασικές σάλτσες.',
+                                  'The classic, done right: crispy edges, melted cheese and the three classic sauces.'),
+       'Double Truffle': ('Διπλό smash με truffle mayo και κρεμμύδι. Πλούσιο, αρωματικό, αξέχαστο.',
+                          'A double smash with truffle mayo and onion. Rich, fragrant, unforgettable.'),
+       'Pluto’s Burger': ('Το burger που φέρει το όνομά μας — το signature του Pluto.', 'The burger that carries our name — Pluto’s signature.'),
+       'Crispy Chicken': ('Τραγανό buttermilk chicken, λιωμένο τυρί και δροσερό coleslaw σε κάθε μπουκιά.',
+                          'Crispy buttermilk chicken, melted cheese and fresh coleslaw in every bite.'),
+       'Korean Spicy Chicken': ('Καυτερό, τραγανό, με kimchi coleslaw. Για όσους αγαπούν τη φωτιά.',
+                                'Spicy, crispy, with kimchi coleslaw. For those who love the heat.'),
+       'Chicken Tenders': ('Χρυσαφένια και τραγανά — φτιαγμένα για βουτιά στις σάλτσες μας.', 'Golden and crispy — made for dipping in our sauces.'),
+       'Classic Fries': ('Χρυσές, τραγανές, αλατισμένες σωστά. Η τέλεια παρέα για κάθε burger.', 'Golden and crispy. The perfect partner for any burger.'),
+       'Sweet Potato Fries': ('Γλυκιά και τραγανή εναλλακτική στην κλασική πατάτα.', 'A sweet, crispy twist on classic fries.'),
+       'Truffle Parm Fries': ('Πατάτες ντυμένες για έξοδο: truffle mayo και παρμεζάνα από πάνω.', 'Fries dressed to impress: truffle mayo and parmesan on top.'),
+       'Lock & Load Fries': ('Γεύμα από μόνες τους: smash μπιφτέκι, παρμεζάνα και onion strings πάνω σε πατάτες.',
+                             'A meal on their own: smash patty, parmesan and onion strings over fries.'),
+       'Coleslaw': ('Δροσερό coleslaw για να ισορροπήσει κάθε μπουκιά.', 'Fresh coleslaw to balance every bite.')}
+BADGE = {'OG Double Cheeseburger': ('Το κλασικό', 'The classic'), 'Double Truffle': ('Truffle', 'Truffle'),
+         'Pluto’s Burger': ('Signature', 'Signature'), 'Korean Spicy Chicken': ('Spicy', 'Spicy'), 'Lock & Load Fries': ('Γεμάτες', 'Loaded')}
+PAIR = {'Chicken Tenders': 'Pluto’s Honey Mustard', 'Classic Fries': 'Pluto’s God’s Sauce', 'Sweet Potato Fries': 'Spicy Mayo'}
+MEAL_EL = 'God’s Meal = το burger + πατάτες + αναψυκτικό, μόνο +4,50 € (αντί για 6,00 € χωριστά).'
+MEAL_EN = 'God’s Meal = the burger + fries + a soft drink, just +€4.50 (instead of €6.00 separately).'
 
 def chips(name, lang):
     ks = INGR.get(name) or []
@@ -90,8 +117,11 @@ def head(word, el, en, lang):
             f'<p class="mh-t"><span class="mh-dot" aria-hidden="true"></span>{T(el, en, lang)}</p></header>')
 
 def item(name, del_, den, p, m, lang, i):
-    return (f'<li class="mi rv" style="--i:{i}"><div class="mi-top"><h4 class="mi-n">{e(name)}</h4>'
-            f'<span class="mi-dots" aria-hidden="true"></span>{price(p, m, lang)}</div>' + chips(name, lang) + '</li>')
+    bd = BADGE.get(name); tg = TAG.get(name)
+    b = f'<span class="mi-b" data-en="{e(bd[1])}">{e(bd[1] if lang == "en" else bd[0])}</span>' if bd else ''
+    t = f'<p class="mi-t" data-en="{e(tg[1])}">{e(tg[1] if lang == "en" else tg[0])}</p>' if tg else ''
+    return (f'<li class="mi rv" style="--i:{i}"><div class="mi-top"><h4 class="mi-n">{e(name)}{b}</h4>'
+            f'<span class="mi-dots" aria-hidden="true"></span>{price(p, m, lang)}</div>' + t + chips(name, lang) + '</li>')
 
 TABS = [('m-beef', 'Burgers', 'Burgers'), ('m-chicken', 'Chicken', 'Chicken'), ('m-fries', 'Πατάτες', 'Fries'),
         ('m-sauces', 'Σάλτσες', 'Sauces'), ('m-drinks', 'Ποτά', 'Drinks')]
@@ -113,8 +143,7 @@ def render(lang='el'):
            '    <div class="meal-sw rv" role="group" aria-label="' + ('Price' if L == 'en' else 'Τιμή') + '" data-en-aria="Price">'
            + f'<button type="button" class="on" data-meal="0" aria-pressed="true">{T("Μόνο το burger", "Burger only", L)}</button>'
            + f'<button type="button" data-meal="1" aria-pressed="false">God’s Meal</button><i class="meal-k" aria-hidden="true"></i></div>',
-           '    ' + T('Πατήστε «God’s Meal» για να δείτε την τιμή κάθε burger σε μενού.',
-                       'Tap «God’s Meal» to see the meal price of each burger.', L, 'p', 'meal-note'),
+           '    ' + T(MEAL_EL, MEAL_EN, L, 'p', 'meal-note'),
            '    <div class="mgrid mgrid-food">']
     for bid, word, tel, ten, nel, nen, items in FOOD:
         out.append(f'      <div class="mblock" id="{bid}">{head(word, tel, ten, L)}'
@@ -161,7 +190,7 @@ def schema():
     secs = []
     for bid, word, tel, ten, nel, nen, items in FOOD:
         secs.append({'@type': 'MenuSection', 'name': tel, 'description': nel, 'hasMenuItem': [mi(n, a, p) for n, a, b, p, m in items]})
-    secs.append({'@type': 'MenuSection', 'name': 'God’s Meal', 'hasMenuItem': [mi(n + ' — God’s Meal', '', m) for *_, items in FOOD for n, a, b, p, m in items if m]})
+    secs.append({'@type': 'MenuSection', 'name': 'God’s Meal', 'description': 'Burger + πατάτες + αναψυκτικό.', 'hasMenuItem': [mi(n + ' — God’s Meal', '', m) for *_, items in FOOD for n, a, b, p, m in items if m]})
     secs.append({'@type': 'MenuSection', 'name': FRIES[2], 'hasMenuItem': [mi(n, a, p) for n, a, b, p in FRIES[4]]})
     secs.append({'@type': 'MenuSection', 'name': SAUCES[2], 'hasMenuItem': [mi(n, '', p) for n, p, c in SAUCES[4]]})
     for gel, gen, its in DRINKS[4]:
@@ -172,9 +201,16 @@ def schema():
 def data():
     """compact JSON for the hero menu sheet (built by script.js)."""
     ig = lambda n: [list(IL[k]) for k in INGR.get(n, [])]
-    cats = [{'id': 'beef', 'el': 'Smash burgers', 'en': 'Smash burgers', 'items': [{'n': n, 'ig': ig(n), 'p': p, 'm': m} for n, a, b, p, m in FOOD[0][6]]},
-            {'id': 'chicken', 'el': 'Chicken', 'en': 'Chicken', 'items': [{'n': n, 'ig': ig(n), 'p': p, 'm': m} for n, a, b, p, m in FOOD[1][6]]},
-            {'id': 'fries', 'el': 'Πατάτες & σαλάτα', 'en': 'Fries & salad', 'items': [{'n': n, 'ig': ig(n), 'p': p} for n, a, b, p in FRIES[4]]},
+    sp = {n: p for n, p, c in SAUCES[4]}
+    def ex(n):
+        o = {}
+        if n in TAG: o['t'] = list(TAG[n])
+        if n in BADGE: o['b'] = list(BADGE[n])
+        if n in PAIR: o['pr'] = [PAIR[n], sp[PAIR[n]]]
+        return o
+    cats = [{'id': 'beef', 'el': 'Smash burgers', 'en': 'Smash burgers', 'items': [dict({'n': n, 'ig': ig(n), 'p': p, 'm': m}, **ex(n)) for n, a, b, p, m in FOOD[0][6]]},
+            {'id': 'chicken', 'el': 'Chicken', 'en': 'Chicken', 'items': [dict({'n': n, 'ig': ig(n), 'p': p, 'm': m}, **ex(n)) for n, a, b, p, m in FOOD[1][6]]},
+            {'id': 'fries', 'el': 'Πατάτες & σαλάτα', 'en': 'Fries & salad', 'items': [dict({'n': n, 'ig': ig(n), 'p': p}, **ex(n)) for n, a, b, p in FRIES[4]]},
             {'id': 'sauces', 'el': 'Σάλτσες', 'en': 'Sauces', 'kind': 'tubs', 'items': [{'n': n, 'p': p, 'c': c} for n, p, c in SAUCES[4]]},
             {'id': 'drinks', 'el': 'Ποτά', 'en': 'Drinks', 'kind': 'drinks', 'groups': [
                 {'el': gel, 'en': gen, 'items': [{'n': n, 'ne': EN_NAME.get(n, n), 's': s1, 'se': s2, 'p': p} for n, s1, s2, p in its]} for gel, gen, its in DRINKS[4]]}]
