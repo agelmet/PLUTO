@@ -76,7 +76,7 @@ function split(h){h.setAttribute('aria-label',h.textContent.replace(/\s+/g,' ').
 
 /* ---------- nav ---------- */
 var hd=$('#hd'),nav=$('#nav'),bg=$('#burger');
-function navT(o){nav.classList.toggle('open',o);bg.setAttribute('aria-expanded',o);d.body.style.overflow=o?'hidden':''}
+function navT(o){nav.classList.toggle('open',o);D.classList.toggle('nav-open',o);bg.setAttribute('aria-expanded',o);d.body.style.overflow=o?'hidden':''}
 bg.addEventListener('click',function(){navT(!nav.classList.contains('open'))});
 $$('a',nav).forEach(function(a){a.addEventListener('click',function(){navT(false)})});
 d.addEventListener('keydown',function(e){if(e.key==='Escape'){navT(false);lbClose()}});

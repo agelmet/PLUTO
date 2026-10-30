@@ -5,7 +5,31 @@ Descriptions were cut short («…») in the QR screens — only the visible wor
 import html
 e = lambda s: html.escape(s, quote=True)
 
-BUN_EL, BUN_EN = 'Martin’s Potato Bun', 'Martin’s Potato Bun'
+
+# ingredient library: key → (el, en, kind) — kind colours the chip dot
+IL = {'bun': ('Martin’s Potato Bun', 'Martin’s Potato Bun', 'bun'),
+      'beef2': ('διπλό 100% μοσχαρίσιο smash μπιφτέκι', 'double 100% beef smash patty', 'beef'),
+      'ch2': ('διπλό American cheese', 'double American cheese', 'cheese'),
+      'ch': ('American cheese', 'American cheese', 'cheese'),
+      'bmc': ('τραγανό buttermilk chicken', 'crispy buttermilk chicken', 'chicken'),
+      'slaw': ('coleslaw', 'coleslaw', 'veg'), 'kslaw': ('kimchi coleslaw', 'kimchi coleslaw', 'veg'),
+      'tend': ('τραγανά φιλετάκια κοτόπουλου', 'crispy chicken tenders', 'chicken'),
+      'fries': ('τηγανητές πατάτες', 'fries', 'fry'), 'sweet': ('τηγανητές γλυκοπατάτες', 'fried sweet potatoes', 'fry'),
+      'tmayo': ('truffle mayo', 'truffle mayo', 'sauce'), 'parm': ('παρμεζάνα', 'parmesan', 'cheese'),
+      'beef': ('smash μπιφτέκι', 'smash patty', 'beef'), 'onion': ('onion strings', 'onion strings', 'veg'),
+      'pickle': ('χειροποίητη πίκλα', 'homemade pickles', 'veg')}
+# what each product contains — ONLY what the restaurant's own menu shows. To add a missing ingredient: add it to IL, then here.
+INGR = {'OG Double Cheeseburger': ['bun', 'beef2', 'ch2'], 'Double Truffle': ['bun', 'beef2', 'ch2'], 'Pluto’s Burger': ['bun', 'beef2', 'ch2'],
+        'Crispy Chicken': ['bun', 'bmc', 'ch', 'slaw'], 'Korean Spicy Chicken': ['bun', 'bmc', 'ch', 'kslaw'], 'Chicken Tenders': ['tend'],
+        'Classic Fries': ['fries'], 'Sweet Potato Fries': ['sweet'], 'Truffle Parm Fries': ['fries', 'tmayo', 'parm'],
+        'Lock & Load Fries': ['fries', 'beef', 'parm', 'onion', 'pickle'], 'Coleslaw': []}
+
+def chips(name, lang):
+    ks = INGR.get(name) or []
+    if not ks: return ''
+    lab = 'Ingredients' if lang == 'en' else 'Υλικά'
+    return (f'<ul class="igs" aria-label="{lab}" data-en-aria="Ingredients">'
+            + ''.join(f'<li class="ig ig-{IL[k][2]}" data-en="{e(IL[k][1])}">{e(IL[k][1] if lang == "en" else IL[k][0])}</li>' for k in ks) + '</ul>')
 
 # (id, giant word, title el, title en, note el, note en, items)
 # item = (name, desc el, desc en, price, meal price or None)
@@ -67,8 +91,7 @@ def head(word, el, en, lang):
 
 def item(name, del_, den, p, m, lang, i):
     return (f'<li class="mi rv" style="--i:{i}"><div class="mi-top"><h4 class="mi-n">{e(name)}</h4>'
-            f'<span class="mi-dots" aria-hidden="true"></span>{price(p, m, lang)}</div>'
-            + (f'<p class="mi-d" data-en="{e(den)}">{e(den if lang == "en" else del_)}</p>' if del_ else '') + '</li>')
+            f'<span class="mi-dots" aria-hidden="true"></span>{price(p, m, lang)}</div>' + chips(name, lang) + '</li>')
 
 TABS = [('m-beef', 'Burgers', 'Burgers'), ('m-chicken', 'Chicken', 'Chicken'), ('m-fries', 'Πατάτες', 'Fries'),
         ('m-sauces', 'Σάλτσες', 'Sauces'), ('m-drinks', 'Ποτά', 'Drinks')]
@@ -95,7 +118,7 @@ def render(lang='el'):
            '    <div class="mgrid mgrid-food">']
     for bid, word, tel, ten, nel, nen, items in FOOD:
         out.append(f'      <div class="mblock" id="{bid}">{head(word, tel, ten, L)}'
-                   f'<p class="mb-note" data-en="{e(nen)}">{e(nen if L == "en" else nel)}</p><ul class="mlist">'
+                   '<ul class="mlist">'
                    + ''.join(item(n, a, b, p, m, L, i) for i, (n, a, b, p, m) in enumerate(items)) + '</ul></div>')
     out.append('    </div>')
     fid, fw, fel, fen, fitems = FRIES
@@ -132,7 +155,8 @@ def render(lang='el'):
 def schema():
     def mi(name, desc, p):
         d = {'@type': 'MenuItem', 'name': name, 'offers': {'@type': 'Offer', 'price': f'{p:.2f}', 'priceCurrency': 'EUR'}}
-        if desc: d['description'] = desc
+        ig = ', '.join(IL[k][0] for k in INGR.get(name, []))
+        if ig: d['description'] = ig[0].upper() + ig[1:] + '.'
         return d
     secs = []
     for bid, word, tel, ten, nel, nen, items in FOOD:
@@ -143,3 +167,15 @@ def schema():
     for gel, gen, its in DRINKS[4]:
         secs.append({'@type': 'MenuSection', 'name': gel, 'hasMenuItem': [mi((n + ' ' + s).strip(), '', p) for n, s, s2, p in its]})
     return {'@type': 'Menu', '@id': '#menu', 'name': 'Μενού Pluto Smasherie', 'inLanguage': 'el', 'hasMenuSection': secs}
+
+
+def data():
+    """compact JSON for the hero menu sheet (built by script.js)."""
+    ig = lambda n: [list(IL[k]) for k in INGR.get(n, [])]
+    cats = [{'id': 'beef', 'el': 'Smash burgers', 'en': 'Smash burgers', 'items': [{'n': n, 'ig': ig(n), 'p': p, 'm': m} for n, a, b, p, m in FOOD[0][6]]},
+            {'id': 'chicken', 'el': 'Chicken', 'en': 'Chicken', 'items': [{'n': n, 'ig': ig(n), 'p': p, 'm': m} for n, a, b, p, m in FOOD[1][6]]},
+            {'id': 'fries', 'el': 'Πατάτες & σαλάτα', 'en': 'Fries & salad', 'items': [{'n': n, 'ig': ig(n), 'p': p} for n, a, b, p in FRIES[4]]},
+            {'id': 'sauces', 'el': 'Σάλτσες', 'en': 'Sauces', 'kind': 'tubs', 'items': [{'n': n, 'p': p, 'c': c} for n, p, c in SAUCES[4]]},
+            {'id': 'drinks', 'el': 'Ποτά', 'en': 'Drinks', 'kind': 'drinks', 'groups': [
+                {'el': gel, 'en': gen, 'items': [{'n': n, 'ne': EN_NAME.get(n, n), 's': s1, 'se': s2, 'p': p} for n, s1, s2, p in its]} for gel, gen, its in DRINKS[4]]}]
+    return cats

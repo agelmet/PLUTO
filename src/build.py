@@ -10,6 +10,7 @@ Every section melts into the next one (drip edges that stretch with the scroll).
 import html, json, pathlib, re, sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import menu as MENU
+import hero_menu as HMENU
 S = pathlib.Path(__file__).resolve().parent
 OUT = pathlib.Path('/home/claude/pluto/site')
 e = lambda s: html.escape(s, quote=True)
@@ -70,16 +71,16 @@ faq_html = '\n'.join(
  for q, qe, a, ae in FAQ)
 
 body = (S / 'body.html').read_text()
-body = body.replace('{{MENU}}', MENU.render('el')).replace('{{FAQ}}', faq_html).replace('{{WM_VB}}', art['wm_vb']).replace('{{FLAG_GR}}', FLAG_GR).replace('{{FLAG_UK}}', FLAG_UK)
+body = body.replace('{{MENU}}', MENU.render('el')).replace('{{HERO_MENU}}', HMENU.hero('el')).replace('{{SHEET}}', HMENU.sheet('el')).replace('{{FAQ}}', faq_html).replace('{{WM_VB}}', art['wm_vb']).replace('{{FLAG_GR}}', FLAG_GR).replace('{{FLAG_UK}}', FLAG_UK)
 body = body.replace('<i>{{BOLT}}</i>', '<i></i>')
 for k, v in I.items():
     body = body.replace('{{' + k + '}}', v)
 assert '{{' not in body, re.findall(r'\{\{\w+\}\}', body)
 body = SYMS + '\n' + body
 
-css = (S / 'style.css').read_text()
+css = (S / 'style.css').read_text() + (S / 'hero_menu.css').read_text()
 css_min = re.sub(r'\s*\n\s*', '', re.sub(r'/\*.*?\*/', '', css, flags=re.S))
-js = (S / 'script.js').read_text()
+js = (S / 'script.js').read_text().replace('/* ---------- FAQ: one open', (S / 'hero_menu.js').read_text() + '/* ---------- FAQ: one open', 1)
 fonts = (S.parent / 'work' / 'fonts.css').read_text().replace('\n', '')
 
 TITLE = 'Smash Burgers Δροσιά | Pluto Smasherie — Eat Like a God'
