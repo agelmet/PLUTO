@@ -48,8 +48,8 @@ TAG = {'OG Double Cheeseburger': ('Το κλασικό, όπως πρέπει ν
 BADGE = {'OG Double Cheeseburger': ('Το κλασικό', 'The classic'), 'Double Truffle': ('Truffle', 'Truffle'),
          'Pluto’s Burger': ('Signature', 'Signature'), 'Korean Spicy Chicken': ('Spicy', 'Spicy'), 'Lock & Load Fries': ('Γεμάτες', 'Loaded')}
 PAIR = {'Chicken Tenders': 'Pluto’s Honey Mustard', 'Classic Fries': 'Pluto’s God’s Sauce', 'Sweet Potato Fries': 'Spicy Mayo'}
-MEAL_EL = 'God’s Meal = το burger + πατάτες + αναψυκτικό, μόνο +4,50 € (αντί για 6,00 € χωριστά).'
-MEAL_EN = 'God’s Meal = the burger + fries + a soft drink, just +€4.50 (instead of €6.00 separately).'
+MEAL_EL = 'God’s Meal = το burger σας με πατάτες και αναψυκτικό.'
+MEAL_EN = 'God’s Meal = your burger with fries and a soft drink.'
 
 def chips(name, lang):
     ks = INGR.get(name) or []

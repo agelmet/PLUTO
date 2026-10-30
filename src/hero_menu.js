@@ -9,7 +9,6 @@
   C.forEach(function(c,ci){tb+='<button type="button" data-t="'+c.id+'"'+(ci?'':' aria-current="true"')+'>'+esc(L(c))+'</button>';
    var cnt=c.items?c.items.length:c.groups.reduce(function(a,g){return a+g.items.length},0);
    h+='<section class="ms-sec" id="ms-'+c.id+'"><h3>'+esc(L(c))+'<small>'+cnt+' '+(lang==='en'?'items':'επιλογές')+'</small></h3>';
-   if(c.id==='beef')h+='<div class="ms-promo"><div class="msp-t"><p class="msp-k">God’s Meal</p><p class="msp-h">'+(lang==='en'?'Burger + fries + soft drink':'Burger + πατάτες + αναψυκτικό')+'</p><p class="msp-s">'+(lang==='en'?'Just <b>+€4.50</b> on any burger — instead of €6.00 separately.':'Μόνο <b>+4,50 €</b> σε κάθε burger — αντί για 6,00 € χωριστά.')+'</p></div><img src="assets/img/pluto-smasherie-god-meal-burger-640.webp" width="640" height="378" alt="" loading="lazy" decoding="async"><span class="msp-badge" aria-hidden="true">+4,50 €</span></div>';
    if(c.kind==='tubs'){h+='<div class="ms-tubs">'+c.items.map(function(it,i){return '<div class="ms-tub" style="--i:'+i+';--sc:'+it.c+'"><i aria-hidden="true"></i><span>'+esc(it.n)+'</span><b>'+fmt(it.p)+'</b></div>'}).join('')+'</div>'}
    else if(c.kind==='drinks'){c.groups.forEach(function(g){h+='<h4 class="ms-dg">'+esc(L(g))+'</h4><ul class="ms-dl">'+g.items.map(function(it,i){var nm=lang==='en'?it.ne:it.n,s=lang==='en'?it.se:it.s;return '<li class="ms-di" style="--i:'+i+'"><span>'+esc(nm)+(s?' <small>'+esc(s)+'</small>':'')+'</span><b>'+fmt(it.p)+'</b></li>'}).join('')+'</ul>'})}
    else c.items.forEach(function(it,i){
