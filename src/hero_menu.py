@@ -24,8 +24,7 @@ def hero(lang='el'):
             f'<a class="mbtn" href="#menu" data-open-menu><span class="mbtn-ic">{BOOK}</span>'
             f'<span class="mbtn-t"><b data-en="See the menu">{t("Δείτε το μενού", "See the menu")}</b>'
             f'<small data-en="Every product with its ingredients and price">{t("Κάθε προϊόν με τα υλικά και την τιμή του", "Every product with its ingredients and price")}</small></span>'
-            f'<span class="mbtn-ar">{ARROW}</span></a>'
-            f'<nav class="h-mchips" aria-label="{t("Κατηγορίες μενού", "Menu categories")}" data-en-aria="Menu categories">{ch}</nav></div>')
+            f'<span class="mbtn-ar">{ARROW}</span></a></div>')
 
 def sheet(lang='el'):
     t = lambda el, en: en if lang == 'en' else el
